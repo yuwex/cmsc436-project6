@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.appBarMain.toolbar)
 
 
-        scrollView = // need to find it
+        // scrollView = // need to find it
 
     }
 
@@ -71,9 +71,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_reset) {
+            // reset total i guess?
+            return true
+        } else if (item.itemId == R.id.action_insert) {
+            this.startActivity(Intent(this, InsertActivity::class.java))
+        } else { // delete
+            // show delete activity screen -- build GUI by code
+            return true
+        }
 
-
-
+        return true
     }
 
     companion object {

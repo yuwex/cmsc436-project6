@@ -1,5 +1,7 @@
 package com.example.project6
 
+// NO NEED TO EDIT
+
 class Candy {
     private var id : Int = 0
     private var name : String = ""
