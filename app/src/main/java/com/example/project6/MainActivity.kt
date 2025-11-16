@@ -85,9 +85,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val URL_ALL : String = "http://cmsc436-2301.cs.umd.edu/cmsc436/project6/selectAll.php"
-        const val URL_DELETE : String = "http://cmsc436-2301.cs.umd.edu/cmsc436/project6/delete.php"
-        const val URL_INSERT : String = "http://cmsc436-2301.cs.umd.edu/cmsc436/project6/insert.php"
+        const val URL_ALL : String = "https://cmsc436-2301.cs.umd.edu/cmsc436/project6/selectAll.php"
+        const val URL_DELETE : String = "https://cmsc436-2301.cs.umd.edu/cmsc436/project6/delete.php"
+        const val URL_INSERT : String = "https://cmsc436-2301.cs.umd.edu/cmsc436/project6/insert.php"
         var candies : ArrayList<Candy> = ArrayList<Candy>( )
     }
 }

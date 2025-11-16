@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 
 class InsertActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -14,17 +15,19 @@ class InsertActivity : AppCompatActivity() {
         // handle adding candies
         val addButton = findViewById<Button>(R.id.add)
         addButton.setOnClickListener {
-            val name = findViewById<EditText>(R.id.candy_name).text.toString()
+            var name = findViewById<EditText>(R.id.candy_name).text.toString()
             val priceString = findViewById<EditText>(R.id.candy_price).text.toString()
 
             if (!name.isEmpty()) {
                 try {
-                    val price = priceString.toFloat()
-                    // COMMUNICATE W SERVER
-                    Log.d("InsertActivity", "name: $name price: $price")
+                    var price = priceString.toDouble()
+                    var candy = Candy(-1, name, price)
 
+                    var task = ServerTaskInsert(candy)
+                    task.start()
+                    Log.d("Insert", "name: $name price: $price")
                 } catch (nfe: NumberFormatException) {
-                    Log.d("InsertActivity", "invalid input")
+                    Log.w("Insert", "invalid input")
                     // do nothing
                 }
             }
@@ -36,6 +39,5 @@ class InsertActivity : AppCompatActivity() {
             this.finish()
         }
     }
-
 
 }
