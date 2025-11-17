@@ -7,19 +7,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewParent
-import android.widget.FrameLayout
-import android.widget.GridLayout
-import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.project6.databinding.ActivityMainBinding
 
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
-import java.text.NumberFormat
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,32 +31,36 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.appBarMain.toolbar)
 
+        scrollView = findViewById(R.id.scroll_view)
 
-        // scrollView = // need to find it
-
+        bringMenuToFront()
     }
 
-    // Should help figre out how to bring the View containing the menu to the front
-    // so that the user can click on the menu and choose a menu item
-    fun findInfo( ) {
-        // obviously, scrollView should not be null and should have been added to the View
-        var parent : ViewParent = scrollView.parent
-        Log.w( "MainActivity", "parent is " + parent ) // DrawerLayout
+    override fun onResume() {
+        super.onResume()
 
-        var drawerLayout : DrawerLayout = parent as DrawerLayout
-        Log.w( "MainActivity", "drawerLayout is " + drawerLayout ) // DrawerLayout
+        val task = ServerTaskSelect(this)
+        task.start()
+    }
 
-        var count : Int = drawerLayout.childCount
-        Log.w( "MainActivity", "child count is " + count ) // 2
+    fun bringMenuToFront( ) {
+        val parent : ViewParent = scrollView.parent
+        val drawerLayout : DrawerLayout = parent as DrawerLayout
 
+        for ( i in 0..<drawerLayout.childCount) {
+            val view : View = drawerLayout.getChildAt( i )
 
-        for ( i in 0..count - 1) {
-            var view : View = drawerLayout.getChildAt( i )
-            Log.w( "MainActivity", "view at " + i + " is " + view )
+            if (view is CoordinatorLayout) {
+                view.bringToFront()
+            }
         }
-        // Be careful above: Views are not guaranteed to always come out in the same order !!!!!
+    }
 
+    fun loadData(candies: Array<Candy>) {
+        MainActivity.candies = ArrayList(candies.toList())
+        Log.w("MainActivity", "Candies: ${candies.contentToString()}")
 
+        //toastTotal() // Toast total
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -70,15 +69,17 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    fun toastTotal() {
+        Toast.makeText(this, "\$$total", Toast.LENGTH_SHORT).show()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_reset) {
-            // reset total i guess?
-            return true
+            total = 0.0
         } else if (item.itemId == R.id.action_insert) {
             this.startActivity(Intent(this, InsertActivity::class.java))
         } else { // delete
-            // show delete activity screen -- build GUI by code
-            return true
+            this.startActivity(Intent(this, DeleteActivity::class.java))
         }
 
         return true
