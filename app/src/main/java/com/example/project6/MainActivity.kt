@@ -13,6 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.project6.databinding.ActivityMainBinding
+import android.widget.GridLayout
+import androidx.appcompat.widget.AppCompatButton
+import android.content.Context
+import android.util.AttributeSet
 
 
 
@@ -60,7 +64,47 @@ class MainActivity : AppCompatActivity() {
         MainActivity.candies = ArrayList(candies.toList())
         Log.w("MainActivity", "Candies: ${candies.contentToString()}")
 
-        //toastTotal() // Toast total
+        buildCandyButtons()
+    }
+
+    private fun buildCandyButtons() {
+        total = 0.0
+
+        scrollView.removeAllViews()
+
+        val gridLayout = GridLayout(this).apply {
+            columnCount = 2
+            rowCount = (candies.size + 1) / 2
+            setPadding(0, 200, 0, 0)
+        }
+
+
+        scrollView.post {
+            val availableWidth = scrollView.width
+            buttonWidth = availableWidth / 2
+
+            for (candy in candies) {
+                Log.w("ManActivity", candy.toString())
+                val button = CandyButton(this, candy)
+
+                val params = GridLayout.LayoutParams().apply {
+                    width = buttonWidth
+                    height = GridLayout.LayoutParams.WRAP_CONTENT
+                    setMargins(8, 8, 8, 8)
+                }
+                button.layoutParams = params
+
+                button.setOnClickListener({
+                    total += candy.getPrice()
+                    toastTotal()
+                })
+
+                gridLayout.addView(button)
+            }
+
+
+            scrollView.addView(gridLayout)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -74,15 +118,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_reset) {
-            total = 0.0
-        } else if (item.itemId == R.id.action_insert) {
-            this.startActivity(Intent(this, InsertActivity::class.java))
-        } else { // delete
-            this.startActivity(Intent(this, DeleteActivity::class.java))
-        }
+        val id = item.itemId
 
-        return true
+        if (id == R.id.action_reset) {
+            total = 0.0
+            toastTotal()
+            return true
+        } else if (id == R.id.action_insert) {
+            startActivity(Intent(this, InsertActivity::class.java))
+            return true
+        } else {
+            startActivity(Intent(this, DeleteActivity::class.java))
+            return true
+        }
     }
 
     companion object {
@@ -91,4 +139,19 @@ class MainActivity : AppCompatActivity() {
         const val URL_INSERT : String = "https://cmsc436-2301.cs.umd.edu/cmsc436/project6/insert.php"
         var candies : ArrayList<Candy> = ArrayList<Candy>( )
     }
+}
+
+class CandyButton : AppCompatButton {
+
+    lateinit var candy: Candy
+
+    constructor(context: Context, candy: Candy) : super(context) {
+        bindCandy(candy)
+    }
+
+    fun bindCandy(c: Candy) {
+        candy = c
+        text = "${candy.getName()}\n$${String.format("%.2f", candy.getPrice())}"
+    }
+
 }
